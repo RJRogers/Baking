@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Baking</string>
+    <string name="title_item_detail">Item Detail</string>
+    <string name="next_step">Next step</string>
+    <string name="previous_step">Previous step</string>
+</resources>
