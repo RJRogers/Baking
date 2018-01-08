@@ -32,13 +32,13 @@
         android:id="@+id/button_one"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Previous"/>
+        android:text="Next"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/button_two"
-        android:text="Next"/>
+        android:text="Previous"/>
 
     <RelativeLayout
         android:id="@+id/main_content"
