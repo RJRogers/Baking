@@ -155,7 +155,7 @@ public class StepDetailFragment extends Fragment {
     @OnClick(R.id.button_one)
     void clickButtonOne() {
 
-        if (counter < newSteps.size()) {
+        if (counter <= newSteps.size()) {
             Log.d(LOG_TAG, "Button 1 Clicked");
             Bundle args = new Bundle();
             buttonOneStep = newSteps.get(clickPostion + 1);
@@ -170,7 +170,8 @@ public class StepDetailFragment extends Fragment {
 
         }
 
-        else {
+        else if (counter == newSteps.size())
+        {
             Log.d(LOG_TAG, "ERROR");
         }
 
@@ -244,7 +245,11 @@ public class StepDetailFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
 
-        releasePlayer();
+        if(mExoPlayer != null){
+            releasePlayer();
+        }
+
+
 
     }
 
