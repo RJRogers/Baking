@@ -8,19 +8,12 @@
 
 
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/step_fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
     <com.google.android.exoplayer2.ui.SimpleExoPlayerView
         android:id="@+id/playerView"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="300dp"
 
         />
-
-
 
 
     <TextView
@@ -50,7 +43,6 @@
     android:scrollbars="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"/>
-
 
 
 

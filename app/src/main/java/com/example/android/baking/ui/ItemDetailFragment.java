@@ -169,7 +169,7 @@ public class ItemDetailFragment extends Fragment {
 
         for(int j = 0; j < steps.size(); j++){
             Log.d(LOG_TAG, steps.get(j).getShortDescription() + "!!!!!!!!!!!");
-            stepString.add("Step " + counter + ": " + steps.get(j).getShortDescription());
+            stepString.add(steps.get(j).getShortDescription());
             counter++;
         }
 
@@ -245,7 +245,9 @@ public class ItemDetailFragment extends Fragment {
 
             mNameTextView = (TextView) itemView.findViewById(R.id.textview_name);
             TextView textView = (TextView) getActivity().findViewById(R.id.firsttext);
+            final TextView recipeStepTextView= (TextView) getActivity().findViewById(R.id.recipeStepText);
             textView.setText(string);
+            recipeStepTextView.setText(steps.get(0).getDescription());
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -262,13 +264,15 @@ public class ItemDetailFragment extends Fragment {
                         Log.d(LOG_TAG, newSteps.get(i).getDescription() + "WWWWWWWWWWWWWWWWWWWWWWW");
                     }
 
+                    recipeStepTextView.setText(steps.get(clickPosition).getDescription());
 
-                    Bundle args = new Bundle();
-                    args.putParcelable("steps", step);
-                    args.putString("recipeName", mRecipe.getName());
-                    args.putParcelableArrayList("stepsList", newSteps);
-                    args.putInt("clickPosition", clickPosition);
-                    args.putString("ingredients",string);
+
+//                    Bundle args = new Bundle();
+//                    args.putParcelable("steps", step);
+//                    args.putString("recipeName", mRecipe.getName());
+//                    args.putParcelableArrayList("stepsList", newSteps);
+//                    args.putInt("clickPosition", clickPosition);
+//                    args.putString("ingredients",string);
 
 //                    EventBus.getDefault().postSticky(new Message(2, args));
 
