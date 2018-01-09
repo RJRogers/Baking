@@ -54,6 +54,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -74,25 +75,15 @@ public class StepDetailFragment extends Fragment {
 
     TextView textView;
 
-    String mVideoLink;
-
     Steps buttonOneStep;
 
     SimpleExoPlayerView mPlayerView;
 
     private SimpleExoPlayer mExoPlayer;
 
-    private ExoPlayer.EventListener exoPlayerEventListener;
-
     int clickPostion;
 
-    int index = 1;
-
-    long currentPosition;
-
-    Dialog mFullScreenDialog;
-
-    boolean mExoPlayerFullscreen = false;
+    int counter = 0;
 
 
 
@@ -131,6 +122,8 @@ public class StepDetailFragment extends Fragment {
 
         if(!steps.getVideoURL().isEmpty()){
             initializePlayer(Uri.parse(steps.getVideoURL()));
+
+            Log.d(LOG_TAG,steps.getVideoURL().toString() + "O000000000000000000");
         }
 
 
@@ -150,22 +143,31 @@ public class StepDetailFragment extends Fragment {
 
 
 
-    int counter = 0;
+
+
 
     @OnClick(R.id.button_one)
     void clickButtonOne() {
+
 
         if (counter <= newSteps.size()) {
             Log.d(LOG_TAG, "Button 1 Clicked");
             Bundle args = new Bundle();
             buttonOneStep = newSteps.get(clickPostion + 1);
-            args.putParcelable("steps", buttonOneStep);
-            args.putString("recipeName", string);
-            args.putParcelableArrayList("stepsList", newSteps);
-            args.putInt("clickPosition", clickPostion + 1);
-            args.putString("ingredients", string);
-            EventBus.getDefault().postSticky(new Message(3, args));
-            counter = counter + 1;
+            if(args != null) {
+
+
+                args.putParcelable("steps", buttonOneStep);
+                args.putString("recipeName", string);
+                args.putParcelableArrayList("stepsList", newSteps);
+                args.putInt("clickPosition", clickPostion + 1);
+                args.putString("ingredients", string);
+                EventBus.getDefault().postSticky(new Message(3, args));
+                counter = counter + 1;
+            } else{
+                Log.d(LOG_TAG, "Args is null");
+            }
+
 
 
         }
@@ -255,30 +257,6 @@ public class StepDetailFragment extends Fragment {
 
 
 
-
-//    private void initFullscreenDialog() {
-//
-//        mFullScreenDialog = new Dialog(this, android.R.style.Theme_Black_NoTitleBar_Fullscreen) {
-//            public void onBackPressed() {
-//                if (mExoPlayerFullscreen)
-//                    closeFullscreenDialog();
-//                super.onBackPressed();
-//            }
-//        };
-//    }
-
-
-//    private void closeFullscreenDialog() {
-//
-//        ((ViewGroup) mPlayerView.getParent()).removeView(mPlayerView);
-//
-//
-//
-//        ((FrameLayout) findViewById(R.id.main_media_frame)).addView(mExoPlayerView);
-//        mExoPlayerFullscreen = false;
-//        mFullScreenDialog.dismiss();
-//
-//    }
 
 
 

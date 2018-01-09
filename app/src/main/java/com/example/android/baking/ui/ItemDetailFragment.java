@@ -3,6 +3,8 @@ package com.example.android.baking.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
@@ -28,6 +30,18 @@ import com.example.android.baking.model.Message;
 import com.example.android.baking.model.New;
 import com.example.android.baking.model.Recipe;
 import com.example.android.baking.model.Steps;
+import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.LoadControl;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelector;
+import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -58,7 +72,7 @@ public class ItemDetailFragment extends Fragment {
 
     Recipe mRecipe;
 
-    List<String> recipeString = new ArrayList<>();
+
     List<String> stepString = new ArrayList<>();
     List<String> ingredientsString;
     List<Steps> steps;
@@ -66,6 +80,12 @@ public class ItemDetailFragment extends Fragment {
     Steps step;
 
     String string;
+
+    SimpleExoPlayerView mPlayerView;
+
+    private SimpleExoPlayer mExoPlayer;
+
+    String stringOne;
 
 
 
@@ -83,9 +103,6 @@ public class ItemDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-
-
         if (getArguments().containsKey(ARG_ITEM_ID)) {
 
             mRecipe = Recipe.RECIPE_MAP.get(getArguments().getString(ARG_ITEM_ID));
@@ -101,10 +118,16 @@ public class ItemDetailFragment extends Fragment {
 
        steps = mRecipe.getSteps();
 
+        stringOne = steps.get(0).getVideoURL();
+
         for(int j = 0; j < steps.size(); j++){
 
             Log.d(LOG_TAG, steps.get(j).getVideoURL() + " @@@@@@@@@@@@@@@@@@");
         }
+
+
+
+
 
 
         //INGREDIENTS
@@ -183,6 +206,20 @@ public class ItemDetailFragment extends Fragment {
                 .findViewById(R.id.my_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
+
+        mPlayerView = (SimpleExoPlayerView) view.findViewById(R.id.playerView);
+
+        // Load the question mark as the background image until the user answers the question.
+        mPlayerView.setDefaultArtwork(BitmapFactory.decodeResource
+                (getResources(), R.drawable.question_mark));
+
+
+        if(!steps.get(0).getVideoURL().isEmpty()){
+            initializePlayer(Uri.parse(steps.get(0).getVideoURL()));
+
+
+        }
+
         updateUI();
 
         return view;
@@ -192,7 +229,6 @@ public class ItemDetailFragment extends Fragment {
     private void updateUI(){
         mAdapter = new MyAdapter(mNewSteps);
         recyclerView.setAdapter(mAdapter);
-
 
 
     }
@@ -234,7 +270,12 @@ public class ItemDetailFragment extends Fragment {
                     args.putInt("clickPosition", clickPosition);
                     args.putString("ingredients",string);
 
-                    EventBus.getDefault().postSticky(new Message(2, args));
+//                    EventBus.getDefault().postSticky(new Message(2, args));
+
+                    releasePlayer();
+
+                    initializePlayer(Uri.parse(steps.get(clickPosition).getVideoURL()));
+                    Log.d(LOG_TAG, steps.get(clickPosition).getVideoURL().toString() + "qqqqqqqqqqqqqqqqqqqq");
 
                 }
             });
@@ -315,6 +356,50 @@ public class ItemDetailFragment extends Fragment {
         actionBar.setTitle(mRecipe.getName());
 
     }
+
+    private void releasePlayer(){
+        mExoPlayer.stop();
+        mExoPlayer.release();
+        mExoPlayer = null;
+    }
+
+
+    private void initializePlayer(Uri mediaUri) {
+        if (mExoPlayer == null) {
+            // Create an instance of the ExoPlayer.
+            TrackSelector trackSelector = new DefaultTrackSelector();
+            LoadControl loadControl = new DefaultLoadControl();
+            mExoPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector, loadControl);
+            mPlayerView.setPlayer(mExoPlayer);
+
+            // Set the ExoPlayer.EventListener to this activity.
+//            mExoPlayer.addListener(exoPlayerEventListener);
+
+            // Prepare the MediaSource.
+            String userAgent = Util.getUserAgent(getContext(), "Baking");
+            MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(getContext(), userAgent), new DefaultExtractorsFactory(), null, null);
+            mExoPlayer.prepare(mediaSource);
+            mExoPlayer.setPlayWhenReady(true);
+
+        }
+    }
+
+
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        if(mExoPlayer != null){
+            releasePlayer();
+        }
+
+
+
+    }
+
+
 
 
 

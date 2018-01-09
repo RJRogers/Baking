@@ -31,7 +31,7 @@ import static com.example.android.baking.ui.ItemListActivity.LOG_TAG;
  */
 public class ItemDetailActivity extends AppCompatActivity {
 
-
+//Eventbus
     @Override
     protected void onStart() {
         super.onStart();
